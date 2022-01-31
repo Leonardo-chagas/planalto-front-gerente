@@ -91,7 +91,7 @@ const ItemArea = styled.TouchableHighlight`
 `;
 
 export default function DestinoPesquisa({navigation, route}) {
-    const [dataSource] = useState(Data.Cities);
+    const [dataSource] = useState(navigation.jsonCities);
     const [filtered, setFiltered] = useState(dataSource);
     const [destino, setDestino] = useState('');
     const OnSearch = (text) => {
@@ -100,7 +100,7 @@ export default function DestinoPesquisa({navigation, route}) {
             const temp = text.toString().toLowerCase();
 
             const tempList = dataSource.filter(item=>{
-                if(item.toString().toLowerCase().startsWith(temp))
+                if(item.name.toString().toLowerCase().startsWith(temp))
                 return item
             })
             setFiltered(tempList);
@@ -144,7 +144,7 @@ export default function DestinoPesquisa({navigation, route}) {
                             navigator={navigation}
                             underlayColor='#b5b5b5'
                             activeOpacity={0.6}>
-                            <Item>{item}</Item>
+                            <Item>{item.name}</Item>
                             </ItemArea>)
                         })
                     }

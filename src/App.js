@@ -8,11 +8,12 @@ import  ViagemForm  from './screens/ViagemForm'
 import  OrigemPesquisa  from './screens/OrigemPesquisa'
 import  DestinoPesquisa  from './screens/DestinoPesquisa'
 import Viagens from './screens/Viagens'
-import Assentos from './screens/Assentos';
 import Login from './screens/Login';
 import Confirmar from './screens/Confirmar';
 import Cadastro from './screens/Cadastro';
-import MinhasViagens from './screens/MinhasViagens';
+import MainMenu from './screens/Menu';
+import AdicionarBus from './screens/AdicionarBus';
+import Onibus from './screens/Onibus';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,11 +23,17 @@ export default () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen
+        name='Menu'
+        component={MainMenu}/>
+      <Stack.Screen
         name='Pesquisa de Viagens'
         component={ViagemForm}/>
       <Stack.Screen
-        name='Minhas Viagens'
-        component={MinhasViagens}/>
+        name='Adicionar Onibus'
+        component={AdicionarBus}/>
+        <Stack.Screen
+        name='Onibus'
+        component={Onibus}/>
       <Stack.Screen
         name='Login'
         component={Login}/>
@@ -42,9 +49,6 @@ export default () => {
         <Stack.Screen
         name='Viagens'
         component={Viagens}/>
-        <Stack.Screen
-        name='Assentos'
-        component={Assentos}/>
         <Stack.Screen
         name='Confirmar'
         component={Confirmar}/>

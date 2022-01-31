@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -8,7 +8,7 @@ const Page = styled.SafeAreaView`
   flex: 1;
   background-color: #F2F2F2;
   align-items: center;
-`;//Area que contem os elementos da tela
+`;
 
 const Header = styled.View`
   width: 100%;
@@ -16,13 +16,13 @@ const Header = styled.View`
   height: 50px;
   align-items: flex-start;
   flex-direction: row;
-`;//Area que contem o titulo da tela
+`;
 
 const HeaderText = styled.Text`
   color: white;
   font-size: 22px;
   padding: 10px;
-`;//Titulo da tela
+`;
 
 const SearchDropdownArea = styled.ScrollView`
   position: absolute;
@@ -48,16 +48,6 @@ const BackButton = styled.TouchableHighlight`
   margin-top: 13px;
 `;
 
-const ButtonSymbol = styled.Text`
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  width: 100%;
-  justify-content: center;
-  padding-left: 10px;
-  padding-top: 10px;
-`;
-
 const Item = styled.Text`
   font-size: 22px;
   width: 100%;
@@ -74,24 +64,105 @@ const ItemArea = styled.TouchableHighlight`
   background-color: white;
 `;
 
+const Button = styled.TouchableHighlight`
+  margin-bottom: 10px;
+  width: 100%;  
+`;
+
+const LoginText = styled.Text`
+  color: white;
+  background-color: #04B431;
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+`;
+
+const ButtonView = styled.View`
+  background-color: #088A29;
+  width: 100%;
+  padding-left: 50px;
+`;
+
+const DeleteArea = styled.Modal`
+background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const DeleteAreaBody = styled.TouchableOpacity`
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const SelectButton = styled.TouchableHighlight`
+
+`;
+
+const SelectText = styled.Text`
+color: black;
+font-size: 22px;
+`;
+
+const YesText = styled.Text`
+color: white;
+background-color: #04B431;
+font-size: 22px;
+padding: 10px;
+border-radius: 5px;
+text-align: center;
+`;
+
+const NoText = styled.Text`
+color: white;
+background-color: red;
+font-size: 22px;
+padding: 10px;
+border-radius: 5px;
+text-align: center;
+`;
+
+const Box = styled.View`
+width: 60%;
+height: 70%
+background-color: white;
+position: absolute;
+left: 20%;
+top: 20%;
+align-items: center;
+justify-content: center;
+`;
+
 export default function Viagens({navigation, route}) {
     const [viagens, setViagens] = useState(route.params.viagens);
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
     const [dataIda, setDataIda] = useState(route.params.dataIda);
+    const [selectVisible, setSelectVisible] = useState(false);
+    const [currentId, setCurrentId] = useState(0);
 
-    const ComprarViagem = async (id, busID) => {
-      var busSeats = [];
-      const req = await fetch('http://52.87.215.20:5000/seat');
+    const RemoverOnibus = async () => {
+      const req = await fetch('http://52.87.215.20:5000/trip', {
+        method: 'DELETE',
+        body: JSON.stringify({
+          id: currentId,
+        }),
+        headers:{
+          'Content-type': 'application/json'
+        }
+      });
       const json = await req.json();
-      json.seats.forEach(item => {
-        if(item.bus_id == busID){
-          busSeats.push(item);
+
+      if(json.success){
+        alert('Este ônibus foi removido com sucesso');
       }
-    });
-    DataHandler.viagemID = id;
-    //busSeats = [1, 2, 3, 4, 5];
-    navigation.navigate('Assentos', {seats: busSeats, origem: origem, destino: destino, dataIda: dataIda, id:id});
+      else{
+        alert('Houve um erro ao tentar remover este ônibus');
+      }
+    }
+
+    const ShowModal = (id) => {
+      setCurrentId(id);
+      setSelectVisible(true);
     }
 
     return (
@@ -101,15 +172,45 @@ export default function Viagens({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>Viagens</HeaderText>
+                <HeaderText>{origem} {'->'} {destino}</HeaderText>
             </Header>
+
+            <DeleteArea 
+            visible={selectVisible}
+            transparent={true}>
+              <DeleteAreaBody onPressOut={()=>setSelectVisible(false)}>
+                <TouchableWithoutFeedback>
+                  <Box>
+                    <SelectText>
+                      Você deseja mesmo remover este ônibus desta rota?
+                    </SelectText>
+                    <SelectButton onPress={() => RemoverOnibus}>
+                      <YesText>
+                        Yes
+                      </YesText>
+                    </SelectButton>
+                    <SelectButton onPress={() => setSelectVisible(false)}>
+                      <NoText>
+                        No
+                      </NoText>
+                    </SelectButton>
+                  </Box>
+                </TouchableWithoutFeedback>
+              </DeleteAreaBody>
+            </DeleteArea>
+
+            <ButtonView>
+              <Button onPress={navigation.navigate('Adicionar Onibus', {origem: origem, destino: destino, dataIda: dataIda})}>
+                <LoginText>Adicionar ônibus para esta rota</LoginText>
+              </Button>
+            </ButtonView>
            
                 <SearchDropdownArea>
                     <SearchDropdown>
                     {
                         viagens.map(item=>{
                             return(
-                            <ItemArea onPress={() => ComprarViagem(item.id, item.busID)}
+                            <ItemArea onPress={() => ShowModal(item.id)}
                             navigator={navigation}
                             underlayColor='#b5b5b5'
                             activeOpacity={0.6}>
@@ -117,6 +218,7 @@ export default function Viagens({navigation, route}) {
                                 <Item>Ida: {item.dataIda}</Item>
                                 <Item>Assentos disponíveis: {32}</Item>
                                 <Item>Preço: R${item.preco}</Item>
+                                <Item>ID do ônibus: {busID}</Item>
                             </View>
                             </ItemArea>)
                         })

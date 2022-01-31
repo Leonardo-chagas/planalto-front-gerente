@@ -90,12 +90,12 @@ const ItemArea = styled.TouchableHighlight`
   width: 100%;
 `;
 
-export default function OrigemPesquisa({navigation, route}) {
+export default function Onibus({navigation, route}) {
     const [dataSource] = useState(navigation.jsonCities);
     const [filtered, setFiltered] = useState(dataSource);
-    const [origem, setOrigem] = useState('');
+    const [destino, setDestino] = useState('');
     const OnSearch = (text) => {
-        setOrigem(text);
+        setDestino(text);
         if(text){
             const temp = text.toString().toLowerCase();
 
@@ -113,8 +113,8 @@ export default function OrigemPesquisa({navigation, route}) {
     
 
     const Select = (item) => {
-      setOrigem(item);
-      route.params.onReturnOrigem(item);
+      setDestino(item);
+      route.params.onReturnDestino(item);
       navigation.goBack();
     }
 
@@ -125,13 +125,13 @@ export default function OrigemPesquisa({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>Selecione sua Origem</HeaderText>
+                <HeaderText>Selecione seu Destino</HeaderText>
             </Header>
             <InputView>
               <Input
               placeholder={'Ex: Pelotas'}
               onChangeText={OnSearch}
-              value={origem}
+              value={destino}
               />
             </InputView>
            
@@ -150,7 +150,6 @@ export default function OrigemPesquisa({navigation, route}) {
                     }
                     </SearchDropdown>
                 </SearchDropdownArea>
-            
         </Page>
     );
 }

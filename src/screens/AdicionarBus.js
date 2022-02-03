@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
+import DateTimePicker from '@react-native-community/datetimepicker'
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const Page = styled.SafeAreaView`
@@ -108,12 +109,46 @@ const Input = styled.TextInput`
   color: black;
 `;//Os inputs em si
 
+const Touchable = styled.TouchableOpacity`
+width: 100%;
+justift-content: center;
+`;
+
 export default function AdicionarBus({navigation, route}) {
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
     const [dataIda, setDataIda] = useState(route.params.dataIda);
-    const [onibus, setOnibus] = useState();
+    const [onibus, setOnibus] = useState({plate: ''});
     const [horario, setHorario] = useState();
+    const [showHorarioSelect, setShowHorarioSelect] = useState(false);
+
+    const OnPressOnibus = async () => {
+      /* const req = await fetch("http://52.87.215.20:5000/bus");
+      const json = await req.json();
+      const buses = json.buses; */
+      const listaTeste = [{plate: 'AAA-1234', model: 'model 1', id: 716436},
+      {plate: 'ABB-1234', model: 'model 1', id: 778436},
+      {plate: 'CCC-1234', model: 'model 2', id: 640362},
+      {plate: 'DFG-1234', model: 'model 4', id: 946301}];
+      const buses = listaTeste;
+      navigation.navigate("Onibus", {buses, OnReturnOnibus: (item) => setOnibus(item)});
+    }
+
+    const OnTimeChange = (event, horarioSelecionado) => {
+      const tempTime = horarioSelecionado || '';
+      const time = tempTime != '' ? tempTime.getHours() + ':' + tempTime.getMinutes() : '';
+      setHorario(time);
+      setShowHorarioSelect(false);
+    }
+
+    const EnviarOnibus = () => {
+      if(onibus.plate != '' && horario){
+        navigation.navigate('Confirmar', {origem, destino, dataIda, onibus, horario});
+      }
+      else{
+        alert('Preencha os campos obrigatórios');
+      }
+    }
 
     return (
         <Page>
@@ -122,15 +157,44 @@ export default function AdicionarBus({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>{origem} {'->'} {destino}</HeaderText>
+                <HeaderText>{'origem'} {'->'} {'destino'}</HeaderText>
             </Header>
 
-            <ButtonView>
-              <Button>
-                <LoginText>Adicionar ônibus para esta rota</LoginText>
-              </Button>
-            </ButtonView>
+            <Touchable onPress={OnPressOnibus}>
+            <InputView>
+              <Input 
+              placeholder={'Escolha o ônibus'}
+              editable={false}
+              onTouchStart={OnPressOnibus}
+              value={onibus.plate}
+              />
+            </InputView>
+            </Touchable>
            
+            <Touchable onPress={() => setShowHorarioSelect(true)}>
+            <InputView>
+              <Input 
+              placeholder={'Escolha o horário'}
+              editable={false}
+              onTouchStart={() => setShowHorarioSelect(true)}
+              value={horario}
+              />
+            </InputView>
+            </Touchable>
+
+            {showHorarioSelect && (
+              <DateTimePicker
+              testID='dateTimePicker'
+              value={new Date()}
+              mode={'time'}
+              is24Hour={true}
+              display='default'
+              onChange={OnTimeChange}/>
+            )}
+
+        <Button onPress={EnviarOnibus}>
+          <LoginText>Enviar</LoginText>
+        </Button>
             
         </Page>
     );

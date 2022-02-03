@@ -94,10 +94,11 @@ export default function Confirmar({navigation, route}) {
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
     const [dataIda, setDataIda] = useState(route.params.dataIda);
-    const [assento, setAssento] = useState(route.params.assento);
+    const [horario, setHorario] = useState(route.params.horario);
+    const [onibus, setOnibus] = useState(route.params.onibus);
 
     const Confirmar = async () => {
-      const req = await fetch('http://52.87.215.20:5000/reservation', {
+      /* const req = await fetch('http://52.87.215.20:5000/trip', {
           method: 'POST',
           body: JSON.stringify({
             access_token: DataHandler.token,
@@ -110,9 +111,13 @@ export default function Confirmar({navigation, route}) {
         });
         const json = await req.json();
         if(json.success == true){
-          alert('Reserva Confirmada');
+          alert('Ônibus adicionado com sucesso');
           navigation.dispatch(StackActions.pop(3));
         }
+        else{
+          alert('Houve um erro ao adicionar o ônibus');
+        } */
+        alert('Ônibus adicionado com sucesso');
     }
 
     return (
@@ -122,17 +127,19 @@ export default function Confirmar({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>Confirmação de Reserva</HeaderText>
+                <HeaderText>Confirmação de Ônibus</HeaderText>
             </Header>
            
                 <SearchDropdownArea>
                     <SearchDropdown>
                         <ItemArea>
                             <View>
-                                <Item>Origem: {DataHandler.origem}</Item>
-                                <Item>Destino: {DataHandler.destino}</Item>
+                                <Item>{origem} -{'>'} {DataHandler.destino}</Item>
                                 <Item>Data: {DataHandler.dataIda}</Item>
-                                <Item>Assento: {DataHandler.assento}</Item>
+                                <Item>Horário: {horario}</Item>
+                                <Item>Placa do ônibus: {onibus.plate}</Item>
+                                <Item>Modelo do ônibus: {onibus.model}</Item>
+                                <Item>ID do ônibus: {onibus.id}</Item>
                                 <Button onPress={() => Confirmar()}>
                                     <LoginText>Confirmar</LoginText>
                                 </Button>

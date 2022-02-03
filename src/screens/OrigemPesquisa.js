@@ -91,7 +91,7 @@ const ItemArea = styled.TouchableHighlight`
 `;
 
 export default function OrigemPesquisa({navigation, route}) {
-    const [dataSource] = useState(navigation.jsonCities);
+    const [dataSource] = useState(route.params.cities);
     const [filtered, setFiltered] = useState(dataSource);
     const [origem, setOrigem] = useState('');
     const OnSearch = (text) => {

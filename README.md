@@ -75,6 +75,8 @@ react-native link react-native-svg
 
 npm install react-native-qrcode-svg
 
+npm install @react-native-community/datetimepicker
+
 ir para o arquivo na pasta:
 
 planalto-front-final-main\android\app\src\main\res\values\styles.xml

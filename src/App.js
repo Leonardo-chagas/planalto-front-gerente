@@ -26,11 +26,11 @@ export default () => {
         name='Menu'
         component={MainMenu}/>
       <Stack.Screen
-        name='Pesquisa de Viagens'
-        component={ViagemForm}/>
-      <Stack.Screen
         name='Adicionar Onibus'
         component={AdicionarBus}/>
+      <Stack.Screen
+        name='Pesquisa de Viagens'
+        component={ViagemForm}/>
         <Stack.Screen
         name='Onibus'
         component={Onibus}/>

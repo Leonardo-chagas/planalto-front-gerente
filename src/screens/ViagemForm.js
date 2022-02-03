@@ -118,21 +118,32 @@ export default function ViagemForm({navigation, route}) {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const onPressOrigem = async () => {
-    const reqCities = await fetch('http://52.87.215.20:5000/city', {
+    /* const reqCities = await fetch('http://52.87.215.20:5000/city', {
         method: 'GET'
       });
       const jsonCities = await reqCities.json();
-    navigation.navigate('Pesquisa de Origem', {jsonCities, onReturnOrigem: (item) => {
+      const cities = jsonCities.cities; */
+      const listaTeste = [{name: 'Rio Grande', id: 736405},
+      {name: 'Porto Alegre', id: 649203},
+      {name: 'Pelotas', id: 120495}];
+      const cities = listaTeste;
+    navigation.navigate('Pesquisa de Origem', {cities, onReturnOrigem: (item) => {
       setOrigem(item.name);
       setOrigemId(item.id);
     }})
   }
+
   const onPressDestino = async () => {
-    const reqCities = await fetch('http://52.87.215.20:5000/city', {
+    /* const reqCities = await fetch('http://52.87.215.20:5000/city', {
         method: 'GET'
       });
       const jsonCities = await reqCities.json();
-    navigation.navigate('Pesquisa de Destino', {jsonCities, onReturnDestino: (item) => {
+      const cities = jsonCities.cities; */
+      const listaTeste = [{name: 'Rio Grande', id: 736405},
+      {name: 'Porto Alegre', id: 649203},
+      {name: 'Pelotas', id: 120495}];
+      const cities = listaTeste;
+    navigation.navigate('Pesquisa de Destino', {cities, onReturnDestino: (item) => {
       setDestino(item.name);
       setDestinoId(item.id);
     }})
@@ -153,7 +164,7 @@ export default function ViagemForm({navigation, route}) {
           destinoID = item.id;
       }); */
       const ida = dataIda;
-      const req = await fetch('http://52.87.215.20:5000/tripByDate', {
+      /* const req = await fetch('http://52.87.215.20:5000/tripByDate', {
         method: 'POST',
         body: JSON.stringify({
           tripdate: dataIda,
@@ -168,12 +179,14 @@ export default function ViagemForm({navigation, route}) {
       const json = await req.json();
       json.trips.forEach(item => {
         viagens.push({dataIda:item.tripdate, preco:item.price, id:item.id, busID: item.bus_id});
-      })
-      //const viagens = [{ida:'12/03/2021',assentos:32, preco:102.09, id: 123}];
+      }) */
+      const viagens = [{ida:'12/03/2021',assentos:32, preco:102.09, id: 123, busID: 83684},
+      {ida:'12/03/2021',assentos:32, preco:103.09, id: 123, busID: 83684},
+      {ida:'12/03/2021',assentos:32, preco:101.09, id: 123, busID: 83684}];
       DataHandler.origem = origem;
       DataHandler.destino = destino;
       DataHandler.dataIda = dataIda;
-      navigation.navigate('Viagens', {viagens: viagens, origem: origem, destino: destino, dataIda: dataIda})
+      navigation.navigate('Viagens', {viagens,origem,destino,dataIda});
     }
     else{
       alert('Preencha os campos obrigatórios');

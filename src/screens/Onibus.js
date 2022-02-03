@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 import Data from './cities.json'
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -78,29 +79,33 @@ const ButtonSymbol = styled.Text`
 `;
 
 const Item = styled.Text`
-  font-size: 22px;
-  border-bottom-width: 1px;
-  border-bottom-color: #A4A4A4;
-  width: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
+font-size: 22px;
+width: 100%;
+padding-top: 5px;
+padding-bottom: 5px;
 `;
 
 const ItemArea = styled.TouchableHighlight`
-  width: 100%;
+width: 100%;
+border-width: 1px;
+border-color: #A4A4A4;
+border-radius: 10px;
+margin-bottom: 10px;
+background-color: white;
 `;
 
 export default function Onibus({navigation, route}) {
-    const [dataSource] = useState(navigation.jsonCities);
+    const [dataSource] = useState(route.params.buses);
     const [filtered, setFiltered] = useState(dataSource);
-    const [destino, setDestino] = useState('');
+    const [onibus, setOnibus] = useState('');
+
     const OnSearch = (text) => {
-        setDestino(text);
+        setOnibus(text);
         if(text){
             const temp = text.toString().toLowerCase();
 
             const tempList = dataSource.filter(item=>{
-                if(item.name.toString().toLowerCase().startsWith(temp))
+                if(item.plate.toString().toLowerCase().startsWith(temp))
                 return item
             })
             setFiltered(tempList);
@@ -113,8 +118,8 @@ export default function Onibus({navigation, route}) {
     
 
     const Select = (item) => {
-      setDestino(item);
-      route.params.onReturnDestino(item);
+      setOnibus(item.plate);
+      route.params.OnReturnOnibus(item);
       navigation.goBack();
     }
 
@@ -125,13 +130,13 @@ export default function Onibus({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>Selecione seu Destino</HeaderText>
+                <HeaderText>Selecione o Ônibus</HeaderText>
             </Header>
             <InputView>
               <Input
-              placeholder={'Ex: Pelotas'}
+              placeholder={'Ex: AAA-1234'}
               onChangeText={OnSearch}
-              value={destino}
+              value={onibus}
               />
             </InputView>
            
@@ -144,7 +149,11 @@ export default function Onibus({navigation, route}) {
                             navigator={navigation}
                             underlayColor='#b5b5b5'
                             activeOpacity={0.6}>
-                            <Item>{item.name}</Item>
+                            <View>
+                              <Item>Placa: {item.plate}</Item>
+                              <Item>Modelo: {item.model}</Item>
+                              <Item>ID: {item.id.toString()}</Item>
+                            </View>
                             </ItemArea>)
                         })
                     }

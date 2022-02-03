@@ -26,7 +26,7 @@ const HeaderText = styled.Text`
 
 const SearchDropdownArea = styled.ScrollView`
   position: absolute;
-  top: 15%;
+  top: 25%;
   left: 0px;
   right: 0px;
   bottom: 0px;
@@ -66,7 +66,8 @@ const ItemArea = styled.TouchableHighlight`
 
 const Button = styled.TouchableHighlight`
   margin-bottom: 10px;
-  width: 100%;  
+  width: 100%;
+  right: 20px; 
 `;
 
 const LoginText = styled.Text`
@@ -95,12 +96,13 @@ background-color: rgba(0, 0, 0, 0.3);
 `;
 
 const SelectButton = styled.TouchableHighlight`
-
+flex: 1;
 `;
 
 const SelectText = styled.Text`
 color: black;
 font-size: 22px;
+bottom: 30px;
 `;
 
 const YesText = styled.Text`
@@ -122,14 +124,25 @@ text-align: center;
 `;
 
 const Box = styled.View`
-width: 60%;
-height: 70%
+width: 80%;
+height: 50%
 background-color: white;
 position: absolute;
-left: 20%;
-top: 20%;
+left: 10%;
+top: 25%;
 align-items: center;
 justify-content: center;
+padding: 10px;
+`;
+
+const SelectArea = styled.View`
+display: flex;
+flex-direction: row;
+padding: 5px;
+`;
+
+const Space = styled.View`
+flex: 1;
 `;
 
 export default function Viagens({navigation, route}) {
@@ -139,9 +152,10 @@ export default function Viagens({navigation, route}) {
     const [dataIda, setDataIda] = useState(route.params.dataIda);
     const [selectVisible, setSelectVisible] = useState(false);
     const [currentId, setCurrentId] = useState(0);
+    const [currentBus, setCurrentBus] = useState();
 
     const RemoverOnibus = async () => {
-      const req = await fetch('http://52.87.215.20:5000/trip', {
+      /* const req = await fetch('http://52.87.215.20:5000/trip', {
         method: 'DELETE',
         body: JSON.stringify({
           id: currentId,
@@ -157,11 +171,15 @@ export default function Viagens({navigation, route}) {
       }
       else{
         alert('Houve um erro ao tentar remover este ônibus');
-      }
+      } */
+      let busArray = viagens;
+      busArray.splice(viagens.indexOf(currentBus), 1)
+      setViagens(busArray);
+      setSelectVisible(false);
     }
 
-    const ShowModal = (id) => {
-      setCurrentId(id);
+    const ShowModal = (item) => {
+      setCurrentBus(item);
       setSelectVisible(true);
     }
 
@@ -184,23 +202,26 @@ export default function Viagens({navigation, route}) {
                     <SelectText>
                       Você deseja mesmo remover este ônibus desta rota?
                     </SelectText>
-                    <SelectButton onPress={() => RemoverOnibus}>
+                    <SelectArea>
+                    <SelectButton onPress={RemoverOnibus}>
                       <YesText>
-                        Yes
+                        Sim
                       </YesText>
                     </SelectButton>
+                    <Space></Space>
                     <SelectButton onPress={() => setSelectVisible(false)}>
                       <NoText>
-                        No
+                        Não
                       </NoText>
                     </SelectButton>
+                    </SelectArea>
                   </Box>
                 </TouchableWithoutFeedback>
               </DeleteAreaBody>
             </DeleteArea>
 
             <ButtonView>
-              <Button onPress={navigation.navigate('Adicionar Onibus', {origem: origem, destino: destino, dataIda: dataIda})}>
+              <Button onPress={() => navigation.navigate('Adicionar Onibus', {origem: origem, destino: destino, dataIda: dataIda})}>
                 <LoginText>Adicionar ônibus para esta rota</LoginText>
               </Button>
             </ButtonView>
@@ -210,7 +231,7 @@ export default function Viagens({navigation, route}) {
                     {
                         viagens.map(item=>{
                             return(
-                            <ItemArea onPress={() => ShowModal(item.id)}
+                            <ItemArea onPress={() => ShowModal(item)}
                             navigator={navigation}
                             underlayColor='#b5b5b5'
                             activeOpacity={0.6}>
@@ -218,7 +239,7 @@ export default function Viagens({navigation, route}) {
                                 <Item>Ida: {item.dataIda}</Item>
                                 <Item>Assentos disponíveis: {32}</Item>
                                 <Item>Preço: R${item.preco}</Item>
-                                <Item>ID do ônibus: {busID}</Item>
+                                <Item>ID do ônibus: {item.busID}</Item>
                             </View>
                             </ItemArea>)
                         })

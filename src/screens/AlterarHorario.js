@@ -1,8 +1,8 @@
-import { StackActions } from '@react-navigation/routers';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
+import DateTimePicker from '@react-native-community/datetimepicker'
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const Page = styled.SafeAreaView`
@@ -77,8 +77,7 @@ const ItemArea = styled.TouchableHighlight`
 
 const Button = styled.TouchableHighlight`
   margin-bottom: 10px;
-  margin-left: 25px;
-  width: 85%;  
+  width: 100%;  
 `;
 
 const LoginText = styled.Text`
@@ -90,21 +89,51 @@ const LoginText = styled.Text`
   text-align: center;
 `;
 
-export default function Confirmar({navigation, route}) {
+const ButtonView = styled.View`
+  background-color: #088A29;
+  width: 100%;
+  padding-left: 50px;
+`
+
+const InputView = styled.View`
+  width: 90%;
+  border-bottom-width: 1px;
+  border-bottom-color: #A4A4A4;
+  padding: 5px;
+  margin-bottom: 20px;
+`;//Area que contem os inputs
+
+const Input = styled.TextInput`
+  height: 40px;
+  font-size: 18px;
+  color: black;
+`;//Os inputs em si
+
+const Touchable = styled.TouchableOpacity`
+width: 100%;
+justift-content: center;
+`;
+
+export default function AlterarHorario({navigation, route}) {
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
     const [dataIda, setDataIda] = useState(route.params.dataIda);
-    const [horario, setHorario] = useState(route.params.horario);
-    const [onibus, setOnibus] = useState(route.params.onibus);
-    const [preco] = useState(route.params.preco);
+    const [onibus, setOnibus] = useState({plate: ''});
+    const [horario, setHorario] = useState();
+    const [preco, setPreco] = useState('');
+    const [showHorarioSelect, setShowHorarioSelect] = useState(false);
 
-    const Confirmar = async () => {
-      const dataArray = dataIda.split('/');
-      //const horaArray = horario.split(':');
-      const dataCompleta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0] + 'T' + horario + '19.723Z';
-      const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
-      const req = await fetch('http://52.87.215.20:5000/trip', {
-          method: 'POST',
+    const OnTimeChange = (event, horarioSelecionado) => {
+      const tempTime = horarioSelecionado || '';
+      const time = tempTime != '' ? tempTime.getHours() + ':' + tempTime.getMinutes() : '';
+      setHorario(time);
+      setShowHorarioSelect(false);
+    }
+
+    const ConfirmarHorario = async () => {
+      if(onibus.plate != '' && horario && preco != ''){
+        const req = await fetch('http://52.87.215.20:5000/trip', {
+          method: 'UPDATE',
           body: JSON.stringify({
             access_token: DataHandler.token,
             origin_id: origem.id,
@@ -118,14 +147,17 @@ export default function Confirmar({navigation, route}) {
           }
         });
         const json = await req.json();
-        if(json.success == true){
-          alert('Ônibus adicionado com sucesso');
-          navigation.dispatch(StackActions.pop(3));
+        if(json.success){
+            alert("Horário alterado com sucesso");
+            navigation.goBack();
         }
         else{
-          alert('Houve um erro ao adicionar o ônibus');
+            alert("Ocorreu um erro ao tentar alterar o horário");
         }
-        //alert('Ônibus adicionado com sucesso');
+      }
+      else{
+        alert('Preencha os campos obrigatórios');
+      }
     }
 
     return (
@@ -135,26 +167,34 @@ export default function Confirmar({navigation, route}) {
                 underlayColor='#1ab241'>
                     <Icon name="arrowleft" color="white" size={25}/>
                 </BackButton>
-                <HeaderText>Confirmação de Ônibus</HeaderText>
+                <HeaderText>{'origem'} {'->'} {'destino'}</HeaderText>
             </Header>
            
-                <SearchDropdownArea>
-                    <SearchDropdown>
-                        <ItemArea>
-                            <View>
-                                <Item>{origem.name} -{'>'} {destino.name}</Item>
-                                <Item>Data: {DataHandler.dataIda}</Item>
-                                <Item>Horário: {horario}</Item>
-                                <Item>Placa do ônibus: {onibus.plate}</Item>
-                                <Item>Modelo do ônibus: {onibus.model}</Item>
-                                <Item>ID do ônibus: {onibus.id}</Item>
-                                <Button onPress={Confirmar}>
-                                    <LoginText>Confirmar</LoginText>
-                                </Button>
-                            </View>
-                        </ItemArea>
-                    </SearchDropdown>
-                </SearchDropdownArea>
+            <Touchable onPress={() => setShowHorarioSelect(true)}>
+            <InputView>
+              <Input 
+              placeholder={'Escolha o horário'}
+              editable={false}
+              onTouchStart={() => setShowHorarioSelect(true)}
+              value={horario}
+              />
+            </InputView>
+            </Touchable>
+
+            {showHorarioSelect && (
+              <DateTimePicker
+              testID='dateTimePicker'
+              value={new Date()}
+              mode={'time'}
+              is24Hour={true}
+              display='default'
+              onChange={OnTimeChange}/>
+            )}
+
+        <Button onPress={ConfirmarHorario}>
+          <LoginText>Confirmar</LoginText>
+        </Button>
+            
         </Page>
     );
 }

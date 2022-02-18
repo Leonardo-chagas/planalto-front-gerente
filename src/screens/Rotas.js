@@ -145,7 +145,7 @@ const Space = styled.View`
 flex: 1;
 `;
 
-export default function Viagens({navigation, route}) {
+export default function Rotas({navigation, route}) {
     const [viagens, setViagens] = useState(route.params.viagens);
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
@@ -153,6 +153,30 @@ export default function Viagens({navigation, route}) {
     const [selectVisible, setSelectVisible] = useState(false);
     const [currentId, setCurrentId] = useState(0);
     const [currentBus, setCurrentBus] = useState();
+
+    const RemoverOnibus = async () => {
+      const req = await fetch('http://52.87.215.20:5000/trip/' + toString(currentId), {
+        method: 'DELETE',
+        body: JSON.stringify({
+          access_token: 'coloque o token aqui',
+        }),
+        headers:{
+          'Content-type': 'application/json'
+        }
+      });
+      const json = await req.json();
+
+      if(json.success){
+        let busArray = viagens;
+        busArray.splice(viagens.indexOf(currentBus), 1)
+        setViagens(busArray);
+        setSelectVisible(false);
+        alert('Este ônibus foi removido com sucesso');
+      }
+      else{
+        alert('Houve um erro ao tentar remover este ônibus');
+      }
+    }
 
     const ShowModal = (item) => {
       setCurrentBus(item);
@@ -175,17 +199,20 @@ export default function Viagens({navigation, route}) {
               <DeleteAreaBody onPressOut={()=>setSelectVisible(false)}>
                 <TouchableWithoutFeedback>
                   <Box>
+                    <SelectText>
+                      Você deseja mesmo remover este ônibus desta rota?
+                    </SelectText>
                     <SelectArea>
-                    <SelectButton onPress={() => navigation.navigate("Alterar Horario")}>
+                    <SelectButton onPress={RemoverOnibus}>
                       <YesText>
-                        Trocar horário desta viagem
+                        Sim
                       </YesText>
                     </SelectButton>
                     <Space></Space>
-                    <SelectButton>
-                      <YesText>
-                        Configurar rotas desta viagem
-                      </YesText>
+                    <SelectButton onPress={() => setSelectVisible(false)}>
+                      <NoText>
+                        Não
+                      </NoText>
                     </SelectButton>
                     </SelectArea>
                   </Box>

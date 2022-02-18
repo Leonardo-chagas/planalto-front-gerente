@@ -94,7 +94,7 @@ export default function Login({navigation}) {
 
       if(json.success == true){
         DataHandler.token = json.access_token
-        navigation.navigate('Pesquisa de Viagens');
+        navigation.navigate('Menu');
        } else {
         alert('Login Negado - '+json.message);
       } 
@@ -119,12 +119,6 @@ export default function Login({navigation}) {
         </InputView>
         <Button onPress={aguardarLogin}>
           <LoginText>Fazer Login</LoginText>
-        </Button>
-        <Button>
-          <SenhaText>Esqueceu a senha?</SenhaText>
-        </Button>
-        <Button onPress={() => navigation.navigate('Cadastro')}>
-          <CadastroText>CADASTRE-SE AQUI</CadastroText>
         </Button>
       </Container>
     </Page>

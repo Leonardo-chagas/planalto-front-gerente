@@ -92,7 +92,7 @@ const MenuButton = styled.TouchableHighlight`
 
 const Touchable = styled.TouchableOpacity``;
 
-export default function ViagemForm({navigation, route}) {
+export default function RotaForm({navigation, route}) {
   const dia = new Date().getDate();
   const mes = new Date().getMonth()+1;
   const ano = new Date().getFullYear();
@@ -180,7 +180,7 @@ export default function ViagemForm({navigation, route}) {
       DataHandler.origem = origem;
       DataHandler.destino = destino;
       DataHandler.dataIda = dataIda;
-      navigation.navigate('Viagens', {viagens,origem,destino,dataIda});
+      navigation.navigate('Rotas', {viagens,origem,destino,dataIda});
     }
     else{
       alert('Preencha os campos obrigatórios');

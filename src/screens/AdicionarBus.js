@@ -120,17 +120,18 @@ export default function AdicionarBus({navigation, route}) {
     const [dataIda, setDataIda] = useState(route.params.dataIda);
     const [onibus, setOnibus] = useState({plate: ''});
     const [horario, setHorario] = useState();
+    const [preco, setPreco] = useState('');
     const [showHorarioSelect, setShowHorarioSelect] = useState(false);
 
     const OnPressOnibus = async () => {
-      /* const req = await fetch("http://52.87.215.20:5000/bus");
+      const req = await fetch("http://52.87.215.20:5000/bus");
       const json = await req.json();
-      const buses = json.buses; */
-      const listaTeste = [{plate: 'AAA-1234', model: 'model 1', id: 716436},
+      const buses = json.buses;
+      /* const listaTeste = [{plate: 'AAA-1234', model: 'model 1', id: 716436},
       {plate: 'ABB-1234', model: 'model 1', id: 778436},
       {plate: 'CCC-1234', model: 'model 2', id: 640362},
       {plate: 'DFG-1234', model: 'model 4', id: 946301}];
-      const buses = listaTeste;
+      const buses = listaTeste; */
       navigation.navigate("Onibus", {buses, OnReturnOnibus: (item) => setOnibus(item)});
     }
 
@@ -142,8 +143,8 @@ export default function AdicionarBus({navigation, route}) {
     }
 
     const EnviarOnibus = () => {
-      if(onibus.plate != '' && horario){
-        navigation.navigate('Confirmar', {origem, destino, dataIda, onibus, horario});
+      if(onibus.plate != '' && horario && preco != ''){
+        navigation.navigate('Confirmar', {origem, destino, dataIda, onibus, horario, preco});
       }
       else{
         alert('Preencha os campos obrigatórios');
@@ -167,6 +168,18 @@ export default function AdicionarBus({navigation, route}) {
               editable={false}
               onTouchStart={OnPressOnibus}
               value={onibus.plate}
+              />
+            </InputView>
+            </Touchable>
+
+            <Touchable>
+            <InputView>
+              <Input 
+              placeholder={'Defina o preço'}
+              editable={true}
+              keyboardType="numeric"
+              value={preco}
+              onChangeText={t => setPreco(t)}
               />
             </InputView>
             </Touchable>

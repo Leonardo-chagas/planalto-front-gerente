@@ -3,6 +3,8 @@ import { Image } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
 
+const dataHandler = new DataHandler();
+
 const Page = styled.SafeAreaView`
   flex: 1;
   background-color: #F2F2F2;
@@ -77,11 +79,9 @@ export default function Login({navigation}) {
 
   const aguardarLogin = async () =>{
     if (password != '' && username != '') {
-      //alert("Informações preenchidas: "+username+" - "+password)
       const req = await fetch('http://52.87.215.20:5000/login', {
         method: 'POST',
         body: JSON.stringify({
-          //username: username,
           email: username,
           password: password
         }),
@@ -93,10 +93,11 @@ export default function Login({navigation}) {
       console.log(json.access_token);
 
       if(json.success == true){
-        DataHandler.token = json.access_token
-        navigation.navigate('Menu');
+        dataHandler.setAccessToken(json.access_token);
+        dataHandler.setRefreshToken(json.refresh_token);
+        navigation.navigate('Menu', {dataHandler: dataHandler});
        } else {
-        alert('Login Negado - '+json.message);
+        alert('Login Negado - ' + json.message);
       } 
 
     } else {

@@ -69,24 +69,24 @@ const Header = styled.View`
   width: 100%;
   background-color: #088A29;
   height: 50px;
-  margin-bottom: 20px;
   align-items: flex-start;
+  flex-direction: row;
 `;//Area que contem o titulo da tela
 
 const HeaderText = styled.Text`
   color: white;
   font-size: 22px;
   padding: 10px;
-  margin-left: 20px;
 `;//Titulo da tela
 
 const MenuButton = styled.TouchableHighlight`
+  background-color: #088A29;
   color: red;
   font-size: 22px;
   font-weight: bold;
-  width: 7%;
-  margin-top: 12px;
-  position: absolute;
+  width: 10%;
+  margin-top: 13px;
+  align-items: center;
 `;
 
 const Menu = styled.Modal`
@@ -123,6 +123,13 @@ const Touchable = styled.TouchableOpacity``;
 export default function MainMenu({navigation, route}) {
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const Sair = () => {
+    setMenuVisible(false)
+    // route.params.dataHandler.setAccessToken('');
+    // route.params.dataHandler.setRefreshToken('');
+    // navigation.navigate('Login');
+  }
+
   return (
     <Page>
       <Menu visible={menuVisible}
@@ -138,17 +145,10 @@ export default function MainMenu({navigation, route}) {
                 </View>
               </MenuItem>
 
-              <MenuItem>
-                <View>
-                  <Icon name="open-book"  color="#aaaaaa" size={25}/>
-                  <MenuItemText>Dados</MenuItemText>
-                </View>
-              </MenuItem>
-
-              <MenuItem onPress={()=>navigation.goBack()}>
+              <MenuItem onPress={()=>Sair()}>
                 <View>
                   <Icon name="log-out" color="#aaaaaa" size={25}/>
-                  <MenuItemText>Logout</MenuItemText>
+                  <MenuItemText>Sair</MenuItemText>
                 </View>
               </MenuItem>
             </Box>
@@ -160,17 +160,19 @@ export default function MainMenu({navigation, route}) {
         <MenuButton onPress={()=>setMenuVisible(true)}>
           <Icon name='menu' size={25} color="white"/>
         </MenuButton>
-        <HeaderText>Menu Principal</HeaderText>
+        <HeaderText>Opções Gerente</HeaderText>
       </Header>
 
       <Container>
-        <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20}} />
-        
+        <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20, marginTop: 20, alignSelf: 'center'}} />
         <Button onPress={() => navigation.navigate('Pesquisa de Viagens')}>
-          <LoginText>Buscar por Viagem</LoginText>
+          <LoginText>Inserir Viagem</LoginText>
         </Button>
         <Button onPress={() => navigation.navigate('Pesquisa de Rotas')}>
-          <LoginText>Buscar por Rota</LoginText>
+          <LoginText>Editar Viagem</LoginText>
+        </Button>
+        <Button onPress={() => navigation.navigate('Pesquisa de Rotas')}>
+          <LoginText>Excluir Viagem</LoginText>
         </Button>
       </Container>
     </Page>

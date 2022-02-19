@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet } from 'react-native';
-import styled from 'styled-components/native';
-import DatePicker from 'react-native-datepicker';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import  OrigemPesquisa  from './screens/OrigemPesquisa'
@@ -16,7 +13,6 @@ import RotaForm from './screens/RotaForm';
 import Rotas from './screens/Rotas';
 import AlterarHorario from './screens/AlterarHorario';
 import ViagemForm from './screens/ViagemForm';
-import Viagens from './screens/Viagens';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,28 +33,28 @@ export default () => {
       <Stack.Screen
         name='Pesquisa de Rotas'
         component={RotaForm}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Onibus'
         component={Onibus}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Pesquisa de Origem'
         component={OrigemPesquisa}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Pesquisa de Destino'
         component={DestinoPesquisa}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Rotas'
         component={Rotas}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Confirmar'
         component={Confirmar}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Alterar Horario'
         component={AlterarHorario}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Pesquisa de Viagens'
         component={ViagemForm}/>
-        <Stack.Screen
+      <Stack.Screen
         name='Viagens'
         component={Viagens}/>
       </Stack.Navigator>

@@ -79,7 +79,7 @@ export default function Login({navigation}) {
 
   const aguardarLogin = async () =>{
     if (password != '' && username != '') {
-      const req = await fetch('http://52.87.215.20:5000/login', {
+      const req = await fetch('http://http://34.207.157.190:5000/login', {
         method: 'POST',
         body: JSON.stringify({
           email: username,

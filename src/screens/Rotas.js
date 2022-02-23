@@ -155,7 +155,7 @@ export default function Rotas({navigation, route}) {
     const [currentBus, setCurrentBus] = useState();
 
     const RemoverOnibus = async () => {
-      const req = await fetch('http://52.87.215.20:5000/trip/' + toString(currentId), {
+      const req = await fetch('http://34.207.157.190:5000/trip/' + toString(currentId), {
         method: 'DELETE',
         body: JSON.stringify({
           access_token: 'coloque o token aqui',

@@ -103,7 +103,7 @@ export default function Confirmar({navigation, route}) {
       //const horaArray = horario.split(':');
       const dataCompleta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0] + 'T' + horario + '19.723Z';
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
-      const req = await fetch('http://52.87.215.20:5000/trip', {
+      const req = await fetch('http://34.207.157.190:5000/trip', {
           method: 'POST',
           body: JSON.stringify({
             access_token: DataHandler.token,

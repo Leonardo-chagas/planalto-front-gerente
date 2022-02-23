@@ -132,7 +132,7 @@ export default function AlterarHorario({navigation, route}) {
 
     const ConfirmarHorario = async () => {
       if(onibus.plate != '' && horario && preco != ''){
-        const req = await fetch('http://52.87.215.20:5000/trip', {
+        const req = await fetch('http://34.207.157.190:5000/trip', {
           method: 'UPDATE',
           body: JSON.stringify({
             access_token: DataHandler.token,

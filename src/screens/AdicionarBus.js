@@ -124,7 +124,7 @@ export default function AdicionarBus({navigation, route}) {
     const [showHorarioSelect, setShowHorarioSelect] = useState(false);
 
     const OnPressOnibus = async () => {
-      const req = await fetch("http://52.87.215.20:5000/bus");
+      const req = await fetch("http://34.207.157.190:5000/bus");
       const json = await req.json();
       const buses = json.buses;
       /* const listaTeste = [{plate: 'AAA-1234', model: 'model 1', id: 716436},

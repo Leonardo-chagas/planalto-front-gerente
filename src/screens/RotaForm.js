@@ -116,7 +116,7 @@ export default function RotaForm({navigation, route}) {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const onPressOrigem = async () => {
-    const reqCities = await fetch('http://52.87.215.20:5000/city', {
+    const reqCities = await fetch('http://34.207.157.190:5000/city', {
         method: 'GET'
       });
       const jsonCities = await reqCities.json();
@@ -131,7 +131,7 @@ export default function RotaForm({navigation, route}) {
   }
 
   const onPressDestino = async () => {
-    const reqCities = await fetch('http://52.87.215.20:5000/city', {
+    const reqCities = await fetch('http://34.207.157.190:5000/city', {
         method: 'GET'
       });
       const jsonCities = await reqCities.json();
@@ -150,7 +150,7 @@ export default function RotaForm({navigation, route}) {
       const dataArray = dataIda.split('/');
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
       console.log(dataCerta);
-      const req = await fetch('http://52.87.215.20:5000/tripByDate', {
+      const req = await fetch('http://34.207.157.190:5000/tripByDate', {
         method: 'POST',
         body: JSON.stringify({
           tripdate: dataIda,
@@ -171,7 +171,7 @@ export default function RotaForm({navigation, route}) {
       else{
         //console.log(json.message);
       }
-      const reqteste = await fetch('http://52.87.215.20:5000/trip')
+      const reqteste = await fetch('http://34.207.157.190:5000/trip')
       const jsonteste = await reqteste.json();
       console.log(jsonteste);
       /* const viagens = [{ida:'12/03/2021',assentos:32, preco:102.09, id: 123, busID: 83684},

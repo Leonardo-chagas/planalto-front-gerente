@@ -145,7 +145,7 @@ const Space = styled.View`
 flex: 1;
 `;
 
-export default function Rotas({navigation, route}) {
+export default function RotasEdit({navigation, route}) {
     const [viagens, setViagens] = useState(route.params.viagens);
     const [origem, setOrigem] = useState(route.params.origem);
     const [destino, setDestino] = useState(route.params.destino);
@@ -153,52 +153,6 @@ export default function Rotas({navigation, route}) {
     const [selectVisible, setSelectVisible] = useState(false);
     const [currentId, setCurrentId] = useState(0);
     const [currentBus, setCurrentBus] = useState();
-
-    const RemoverOnibus = async () => {
-      //console.log(DataHandler.token);
-      const reqrefresh = await fetch("http://34.207.157.190:5000/refresh", {
-          method: 'POST',
-          body: JSON.stringify({
-            refresh_token: DataHandler.refresh
-          }),
-          headers:{
-            'Content-Type': 'application/json'
-          }
-        });
-      const jsonrefresh = await reqrefresh.json();
-      if(jsonrefresh.success){
-        DataHandler.token = jsonrefresh.access_token;
-        DataHandler.refresh = jsonrefresh.refresh_token;
-      }
-      const req = await fetch('http://34.207.157.190:5000/trip/' + currentId, {
-        method: 'DELETE',
-        body: JSON.stringify({
-          access_token: DataHandler.token,
-        }),
-        headers:{
-          'Content-type': 'application/json'
-        }
-      });
-      const json = await req.json();
-
-      if(json.success){
-        let busArray = viagens;
-        busArray.splice(viagens.indexOf(currentBus), 1)
-        setViagens(busArray);
-        setSelectVisible(false);
-        alert('Este ônibus foi removido com sucesso');
-      }
-      else{
-        alert('Houve um erro ao tentar remover este ônibus');
-        console.log(json.message);
-      }
-    }
-
-    const ShowModal = (item) => {
-      setCurrentBus(item);
-      setCurrentId(item.id);
-      setSelectVisible(true);
-    }
 
     return (
         <Page>
@@ -209,48 +163,21 @@ export default function Rotas({navigation, route}) {
                 </BackButton>
                 <HeaderText>{origem.name} {'->'} {destino.name}</HeaderText>
             </Header>
-
-            <DeleteArea 
-            visible={selectVisible}
-            transparent={true}>
-              <DeleteAreaBody onPressOut={()=>setSelectVisible(false)}>
-                <TouchableWithoutFeedback>
-                  <Box>
-                    <SelectText>
-                      Você deseja mesmo remover este ônibus desta rota?
-                    </SelectText>
-                    <SelectArea>
-                    <SelectButton onPress={RemoverOnibus}>
-                      <YesText>
-                        Sim
-                      </YesText>
-                    </SelectButton>
-                    <Space></Space>
-                    <SelectButton onPress={() => setSelectVisible(false)}>
-                      <NoText>
-                        Não
-                      </NoText>
-                    </SelectButton>
-                    </SelectArea>
-                  </Box>
-                </TouchableWithoutFeedback>
-              </DeleteAreaBody>
-            </DeleteArea>
            
                 <SearchDropdownArea>
                     <SearchDropdown>
                     {
                         viagens.map(item=>{
                             return(
-                            <ItemArea onPress={() => ShowModal(item)}
+                            <ItemArea onPress={() => navigation.navigate("Alterar Horario", {item: item})}
                             navigator={navigation}
                             underlayColor='#b5b5b5'
                             activeOpacity={0.6}>
                             <View>
-                                <Item>Ida: {item.dataIda}</Item>
+                                <Item>Ida: {item.tripdate}</Item>
                                 <Item>Assentos disponíveis: {32}</Item>
-                                <Item>Preço: R${item.preco}</Item>
-                                <Item>ID do ônibus: {item.busID}</Item>
+                                <Item>Preço: R${item.price}</Item>
+                                <Item>ID do ônibus: {item.bus_id}</Item>
                             </View>
                             </ItemArea>)
                         })

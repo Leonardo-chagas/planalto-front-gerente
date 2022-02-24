@@ -149,11 +149,12 @@ export default function RotaForm({navigation, route}) {
     if(origem && destino && dataIda){
       const dataArray = dataIda.split('/');
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
+      const dat = new Date(dataIda);
       console.log(dataCerta);
       const req = await fetch('http://34.207.157.190:5000/tripByDate', {
         method: 'POST',
         body: JSON.stringify({
-          tripdate: dataIda,
+          tripdate: dataCerta,
           origin_id: origem.id,
           destination_id: destino.id
         }),
@@ -165,15 +166,15 @@ export default function RotaForm({navigation, route}) {
       const json = await req.json();
       if(json.success){
         json.trips.forEach(item => {
-          viagens.push({dataIda:item.tripdate, preco:item.price, id:item.id, busID: item.bus.id});
+          viagens.push({dataIda:item.tripdate, preco:item.price, id:item.id, busID: item.bus_id});
         })
       }
       else{
         //console.log(json.message);
       }
-      const reqteste = await fetch('http://34.207.157.190:5000/trip')
+      /* const reqteste = await fetch('http://34.207.157.190:5000/trip')
       const jsonteste = await reqteste.json();
-      console.log(jsonteste);
+      console.log(jsonteste); */
       /* const viagens = [{ida:'12/03/2021',assentos:32, preco:102.09, id: 123, busID: 83684},
       {ida:'12/03/2021',assentos:32, preco:103.09, id: 123, busID: 83684},
       {ida:'12/03/2021',assentos:32, preco:101.09, id: 123, busID: 83684}]; */

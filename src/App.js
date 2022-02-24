@@ -13,6 +13,8 @@ import RotaForm from './screens/RotaForm';
 import Rotas from './screens/Rotas';
 import AlterarHorario from './screens/AlterarHorario';
 import ViagemForm from './screens/ViagemForm';
+import RotasFormEdit from './screens/RotasFormEdit';
+import RotasEdit from './screens/RotasEdit';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +53,12 @@ export default () => {
       <Stack.Screen
         name='Alterar Horario'
         component={AlterarHorario}/>
+        <Stack.Screen
+        name='Pesquisa de Rotas Editar'
+        component={RotasFormEdit}/>
+        <Stack.Screen
+        name='Rotas Editar'
+        component={RotasEdit}/>
       <Stack.Screen
         name='Pesquisa de Viagens'
         component={ViagemForm}/>

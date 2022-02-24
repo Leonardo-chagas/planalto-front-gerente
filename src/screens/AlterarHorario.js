@@ -115,12 +115,8 @@ justift-content: center;
 `;
 
 export default function AlterarHorario({navigation, route}) {
-    const [origem, setOrigem] = useState(route.params.origem);
-    const [destino, setDestino] = useState(route.params.destino);
-    const [dataIda, setDataIda] = useState(route.params.dataIda);
-    const [onibus, setOnibus] = useState({plate: ''});
+    const [rota] = useState(route.params.item);
     const [horario, setHorario] = useState();
-    const [preco, setPreco] = useState('');
     const [showHorarioSelect, setShowHorarioSelect] = useState(false);
 
     const OnTimeChange = (event, horarioSelecionado) => {
@@ -131,16 +127,34 @@ export default function AlterarHorario({navigation, route}) {
     }
 
     const ConfirmarHorario = async () => {
-      if(onibus.plate != '' && horario && preco != ''){
-        const req = await fetch('http://34.207.157.190:5000/trip', {
-          method: 'UPDATE',
+      if(horario){
+        const reqrefresh = await fetch("http://34.207.157.190:5000/refresh", {
+          method: 'POST',
+          body: JSON.stringify({
+            refresh_token: DataHandler.refresh
+          }),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        });
+      const jsonrefresh = await reqrefresh.json();
+      if(jsonrefresh.success){
+        DataHandler.token = jsonrefresh.access_token;
+        DataHandler.refresh = jsonrefresh.refresh_token;
+      }
+        const horaCerta = horario.split(":");
+        const data = new Date(rota.tripdate);
+        const dataNova = new Date(data.getFullYear(), data.getMonth(), data.getDate(), parseInt(horaCerta[0]), parseInt(horaCerta[1]), 0);
+        //data.setHours(horaCerta[0], horaCerta[1], 0);
+        const req = await fetch('http://34.207.157.190:5000/trip/' + rota.id, {
+          method: 'PUT',
           body: JSON.stringify({
             access_token: DataHandler.token,
-            origin_id: origem.id,
-            destination_id: destino.id,
-            bus_id: onibus.id,
-            tripdate: dataCerta,
-            price: parseFloat(preco)
+            origin_id: rota.origin_id,
+            destination_id: rota.destination_id,
+            bus_id: rota.bus_id,
+            tripdate: dataNova,
+            price: rota.price
           }),
           headers:{
             'Content-Type': 'application/json'

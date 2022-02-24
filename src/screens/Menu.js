@@ -168,7 +168,7 @@ export default function MainMenu({navigation, route}) {
         <Button onPress={() => navigation.navigate('Pesquisa de Viagens')}>
           <LoginText>Inserir Viagem</LoginText>
         </Button>
-        <Button onPress={() => navigation.navigate('Pesquisa de Rotas')}>
+        <Button onPress={() => navigation.navigate('Pesquisa de Rotas Editar')}>
           <LoginText>Editar Viagem</LoginText>
         </Button>
         <Button onPress={() => navigation.navigate('Pesquisa de Rotas')}>

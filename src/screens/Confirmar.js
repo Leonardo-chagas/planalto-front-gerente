@@ -99,10 +99,25 @@ export default function Confirmar({navigation, route}) {
     const [preco] = useState(route.params.preco);
 
     const Confirmar = async () => {
+      const reqrefresh = await fetch("http://34.207.157.190:5000/refresh", {
+          method: 'POST',
+          body: JSON.stringify({
+            refresh_token: DataHandler.refresh
+          }),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        });
+      const jsonrefresh = await reqrefresh.json();
+      if(jsonrefresh.success){
+        DataHandler.token = jsonrefresh.access_token;
+        DataHandler.refresh = jsonrefresh.refresh_token;
+      }
       const dataArray = dataIda.split('/');
       //const horaArray = horario.split(':');
-      const dataCompleta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0] + 'T' + horario + '19.723Z';
+      const dataCompleta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0] + 'T' + horario + ':00.000Z';
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
+      console.log(dataCompleta);
       const req = await fetch('http://34.207.157.190:5000/trip', {
           method: 'POST',
           body: JSON.stringify({
@@ -110,7 +125,7 @@ export default function Confirmar({navigation, route}) {
             origin_id: origem.id,
             destination_id: destino.id,
             bus_id: onibus.id,
-            tripdate: dataCerta,
+            tripdate: dataCompleta,
             price: parseFloat(preco)
           }),
           headers:{
@@ -124,6 +139,7 @@ export default function Confirmar({navigation, route}) {
         }
         else{
           alert('Houve um erro ao adicionar o ônibus');
+          console.log(json.message);
         }
         //alert('Ônibus adicionado com sucesso');
     }

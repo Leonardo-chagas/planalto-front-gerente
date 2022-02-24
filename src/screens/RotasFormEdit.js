@@ -92,7 +92,7 @@ const MenuButton = styled.TouchableHighlight`
 
 const Touchable = styled.TouchableOpacity``;
 
-export default function ViagemForm({navigation, route}) {
+export default function RotasFormEdit({navigation, route}) {
   const dia = new Date().getDate();
   const mes = new Date().getMonth()+1;
   const ano = new Date().getFullYear();
@@ -149,6 +149,7 @@ export default function ViagemForm({navigation, route}) {
     if(origem && destino && dataIda){
       const dataArray = dataIda.split('/');
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
+      const dat = new Date(dataIda);
       console.log(dataCerta);
       const req = await fetch('http://34.207.157.190:5000/tripByDate', {
         method: 'POST',
@@ -163,11 +164,9 @@ export default function ViagemForm({navigation, route}) {
       });
       var viagens = [];
       const json = await req.json();
-      console.log(json);
       if(json.success){
         json.trips.forEach(item => {
-          console.log(item.bus);
-          viagens.push({dataIda:item.tripdate, preco:item.price, id:item.id, busID: item.bus_id});
+          viagens.push(item);
         })
       }
       else{
@@ -182,7 +181,7 @@ export default function ViagemForm({navigation, route}) {
       DataHandler.origem = origem;
       DataHandler.destino = destino;
       DataHandler.dataIda = dataIda;
-      navigation.navigate('Viagens', {viagens,origem,destino,dataIda});
+      navigation.navigate('Rotas Editar', {viagens,origem,destino,dataIda});
     }
     else{
       alert('Preencha os campos obrigatórios');

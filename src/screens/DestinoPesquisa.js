@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import Data from './cities.json'
 import Icon from 'react-native-vector-icons/AntDesign';
+import DataHandler from '../DataHandler';
 
 const Page = styled.SafeAreaView`
   flex: 1;

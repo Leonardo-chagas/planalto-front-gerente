@@ -3,7 +3,7 @@ import { Image } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
 
-const dataHandler = new DataHandler();
+//const dataHandler = new DataHandler();
 
 const Page = styled.SafeAreaView`
   flex: 1;
@@ -79,7 +79,7 @@ export default function Login({navigation}) {
 
   const aguardarLogin = async () =>{
     if (password != '' && username != '') {
-      const req = await fetch('http://http://34.207.157.190:5000/login', {
+      const req = await fetch('http://34.207.157.190:5000/login', {
         method: 'POST',
         body: JSON.stringify({
           email: username,
@@ -90,12 +90,12 @@ export default function Login({navigation}) {
         }
       });
       const json = await req.json();
-      console.log(json.access_token);
 
       if(json.success == true){
-        dataHandler.setAccessToken(json.access_token);
-        dataHandler.setRefreshToken(json.refresh_token);
-        navigation.navigate('Menu', {dataHandler: dataHandler});
+        DataHandler.token = json.access_token;
+        DataHandler.refresh = json.refresh_token;
+        //dataHandler.setRefreshToken(json.refresh_token);
+        navigation.navigate('Menu');
        } else {
         alert('Login Negado - ' + json.message);
       } 

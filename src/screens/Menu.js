@@ -165,6 +165,9 @@ export default function MainMenu({navigation, route}) {
 
       <Container>
         <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20, marginTop: 20, alignSelf: 'center'}} />
+        <Button onPress={() => navigation.navigate('Adicionar Cidade', {dataHandler: route.params.dataHandler})}>
+          <LoginText>Adicionar Cidade</LoginText>
+        </Button>
         <Button onPress={() => navigation.navigate('Inserir Viagem', {dataHandler: route.params.dataHandler})}>
           <LoginText>Inserir Viagem</LoginText>
         </Button>

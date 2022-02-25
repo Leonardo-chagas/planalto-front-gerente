@@ -15,6 +15,7 @@ import AlterarHorario from './screens/AlterarHorario';
 import InserirViagem from './screens/InserirViagem';
 import EditarViagem from './screens/EditarViagem';
 import RotasEdit from './screens/RotasEdit';
+import AdicionarCidade from './screens/AdicionarCidade';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,9 @@ export default () => {
       <Stack.Screen
         name='Nova Viagem'
         component={NovaViagem}/>
+      <Stack.Screen
+        name='Adicionar Cidade'
+        component={AdicionarCidade}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

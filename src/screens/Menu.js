@@ -125,9 +125,9 @@ export default function MainMenu({navigation, route}) {
 
   const Sair = () => {
     setMenuVisible(false)
-    // route.params.dataHandler.setAccessToken('');
-    // route.params.dataHandler.setRefreshToken('');
-    // navigation.navigate('Login');
+    route.params.dataHandler.setAccessToken('');
+    route.params.dataHandler.setRefreshToken('');
+    navigation.navigate('Login');
   }
 
   return (
@@ -165,13 +165,13 @@ export default function MainMenu({navigation, route}) {
 
       <Container>
         <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20, marginTop: 20, alignSelf: 'center'}} />
-        <Button onPress={() => navigation.navigate('Pesquisa de Viagens')}>
+        <Button onPress={() => navigation.navigate('Inserir Viagem', {dataHandler: route.params.dataHandler})}>
           <LoginText>Inserir Viagem</LoginText>
         </Button>
-        <Button onPress={() => navigation.navigate('Pesquisa de Rotas Editar')}>
+        <Button onPress={() => navigation.navigate('Editar Viagem', {dataHandler: route.params.dataHandler})}>
           <LoginText>Editar Viagem</LoginText>
         </Button>
-        <Button onPress={() => navigation.navigate('Pesquisa de Rotas')}>
+        <Button onPress={() => navigation.navigate('Excluir Viagem', {dataHandler: route.params.dataHandler})}>
           <LoginText>Excluir Viagem</LoginText>
         </Button>
       </Container>

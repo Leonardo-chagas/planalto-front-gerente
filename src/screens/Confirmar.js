@@ -1,15 +1,17 @@
 import { StackActions } from '@react-navigation/routers';
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import DataHandler from '../DataHandler';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); 
+// LogBox.ignoreAllLogs();
 
 const Page = styled.SafeAreaView`
   flex: 1;
   background-color: #F2F2F2;
   align-items: center;
-`;//Area que contem os elementos da tela
+`;
 
 const Header = styled.View`
   width: 100%;
@@ -17,13 +19,13 @@ const Header = styled.View`
   height: 50px;
   align-items: flex-start;
   flex-direction: row;
-`;//Area que contem o titulo da tela
+`;
 
 const HeaderText = styled.Text`
   color: white;
   font-size: 22px;
   padding: 10px;
-`;//Titulo da tela
+`;
 
 const SearchDropdownArea = styled.ScrollView`
   position: absolute;
@@ -47,23 +49,16 @@ const BackButton = styled.TouchableHighlight`
   font-weight: bold;
   width: 10%;
   margin-top: 13px;
-`;
-
-const ButtonSymbol = styled.Text`
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  width: 100%;
-  justify-content: center;
-  padding-left: 10px;
-  padding-top: 10px;
+  align-items: center;
 `;
 
 const Item = styled.Text`
-  font-size: 22px;
+  font-size: 20px;
   width: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #A4A4A4;
+  padding-left: 20px;
 `;
 
 const ItemArea = styled.TouchableHighlight`
@@ -76,9 +71,10 @@ const ItemArea = styled.TouchableHighlight`
 `;
 
 const Button = styled.TouchableHighlight`
-  margin-bottom: 10px;
-  margin-left: 25px;
-  width: 85%;  
+  margin-bottom: 20px;
+  margin-top: 10px;
+  align-self: center;
+  width: 90%;
 `;
 
 const LoginText = styled.Text`
@@ -91,86 +87,92 @@ const LoginText = styled.Text`
 `;
 
 export default function Confirmar({navigation, route}) {
-    const [origem, setOrigem] = useState(route.params.origem);
-    const [destino, setDestino] = useState(route.params.destino);
-    const [dataIda, setDataIda] = useState(route.params.dataIda);
-    const [horario, setHorario] = useState(route.params.horario);
-    const [onibus, setOnibus] = useState(route.params.onibus);
-    const [preco] = useState(route.params.preco);
+  const [origem] = useState(route.params.dataHandler.getOrigem());
+  const [destino] = useState(route.params.dataHandler.getDestino());
+  const [dataIda] = useState(route.params.dataHandler.getDataIda())
+  const [horario] = useState(route.params.horario);
+  const [onibus] = useState(route.params.onibus);
+  const [preco] = useState(route.params.preco);
 
-    const Confirmar = async () => {
-      const reqrefresh = await fetch("http://34.207.157.190:5000/refresh", {
-          method: 'POST',
-          body: JSON.stringify({
-            refresh_token: DataHandler.refresh
-          }),
-          headers:{
-            'Content-Type': 'application/json'
-          }
-        });
-      const jsonrefresh = await reqrefresh.json();
-      if(jsonrefresh.success){
-        DataHandler.token = jsonrefresh.access_token;
-        DataHandler.refresh = jsonrefresh.refresh_token;
+  const Confirmar = async () => {
+    const reqrefresh = await fetch("http://34.207.157.190:5000/refresh", {
+        method: 'POST',
+        body: JSON.stringify({
+          refresh_token: route.params.dataHandler.getRefreshToken()
+        }),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      });
+    const jsonrefresh = await reqrefresh.json();
+
+    console.log(jsonrefresh)
+
+    route.params.dataHandler.setAccessToken(jsonrefresh.access_token);
+    route.params.dataHandler.setRefreshToken(jsonrefresh.refresh_token);
+      
+    const dataArray = dataIda.split('/');
+    const horaArray = horario.split(':');
+    const dataCompleta = new Date(dataArray[2],dataArray[1]-1,dataArray[0],horaArray[0],horaArray[1],0);
+
+    const req = await fetch('http://34.207.157.190:5000/trip', {
+        method: 'POST',
+        body: JSON.stringify({
+          access_token: route.params.dataHandler.getAccessToken(),
+          origin_id: origem.id,
+          destination_id: destino.id,
+          bus_id: onibus.id,
+          tripdate: dataCompleta,
+          price: preco
+        }),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(JSON.stringify({
+        access_token: route.params.dataHandler.getAccessToken(),
+        origin_id: origem.id,
+        destination_id: destino.id,
+        bus_id: onibus.id,
+        tripdate: dataCompleta,
+        price: parseFloat(preco)
+      }))
+      const json = await req.json();
+      if(json.success == true){
+        Alert.alert('Aviso','Viagem adicionada com sucesso!');
+        navigation.dispatch(StackActions.pop(4));
       }
-      const dataArray = dataIda.split('/');
-      //const horaArray = horario.split(':');
-      const dataCompleta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0] + 'T' + horario + ':00.000Z';
-      const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
-      console.log(dataCompleta);
-      const req = await fetch('http://34.207.157.190:5000/trip', {
-          method: 'POST',
-          body: JSON.stringify({
-            access_token: DataHandler.token,
-            origin_id: origem.id,
-            destination_id: destino.id,
-            bus_id: onibus.id,
-            tripdate: dataCompleta,
-            price: parseFloat(preco)
-          }),
-          headers:{
-            'Content-Type': 'application/json'
-          }
-        });
-        const json = await req.json();
-        if(json.success == true){
-          alert('Ônibus adicionado com sucesso');
-          navigation.dispatch(StackActions.pop(3));
-        }
-        else{
-          alert('Houve um erro ao adicionar o ônibus');
-          console.log(json.message);
-        }
-        //alert('Ônibus adicionado com sucesso');
-    }
+      else{
+        Alert.alert('Aviso','Erro ao adicionar o ônibus - '+json.message);
+        console.log(json.message);
+      }
+  }
 
-    return (
-        <Page>
-            <Header>
-                <BackButton onPress={() => navigation.goBack()}
-                underlayColor='#1ab241'>
-                    <Icon name="arrowleft" color="white" size={25}/>
-                </BackButton>
-                <HeaderText>Confirmação de Ônibus</HeaderText>
-            </Header>
-           
-                <SearchDropdownArea>
-                    <SearchDropdown>
-                        <ItemArea>
-                            <View>
-                                <Item>{origem.name} -{'>'} {destino.name}</Item>
-                                <Item>Data: {DataHandler.dataIda}</Item>
-                                <Item>Horário: {horario}</Item>
-                                <Item>Placa do ônibus: {onibus.plate}</Item>
-                                <Item>Modelo do ônibus: {onibus.model}</Item>
-                                <Item>ID do ônibus: {onibus.id}</Item>
-                                <Button onPress={Confirmar}>
-                                    <LoginText>Confirmar</LoginText>
-                                </Button>
-                            </View>
-                        </ItemArea>
-                    </SearchDropdown>
-                </SearchDropdownArea>
-        </Page>
-    );
+  return (
+    <Page>
+      <Header>
+        <BackButton onPress={() => navigation.goBack()} underlayColor='#1ab241'>
+          <Icon name="arrowleft" color="white" size={25}/>
+        </BackButton>
+        <HeaderText>Confirmação de Ônibus</HeaderText>
+      </Header>
+      <SearchDropdownArea>
+        <SearchDropdown>
+          <ItemArea>
+            <View>
+              <Item>{origem.name} -{'>'} {destino.name}</Item>
+              <Item>Data: {dataIda}</Item>
+              <Item>Horário: {horario}</Item>
+              <Item>Placa do ônibus: {onibus.plate}</Item>
+              <Item>Modelo do ônibus: {onibus.model}</Item>
+              <Item>ID do ônibus: {onibus.id}</Item>
+              <Button onPress={Confirmar}>
+                <LoginText>Confirmar</LoginText>
+              </Button>
+            </View>
+          </ItemArea>
+        </SearchDropdown>
+      </SearchDropdownArea>
+    </Page>
+  );
 }

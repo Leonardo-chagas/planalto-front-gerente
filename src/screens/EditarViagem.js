@@ -1,61 +1,44 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
 import DatePicker from 'react-native-datepicker';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DataHandler from '../DataHandler';
-
-const Stack = createNativeStackNavigator();
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); 
+// LogBox.ignoreAllLogs();
 
 const Page = styled.SafeAreaView`
   flex: 1;
   background-color: #F2F2F2;
   align-items: center;
-`;//Area que contem os elementos da tela
+`;
 
 const Container = styled.View`
   width: 90%;
-`;//Area que contem o conteudo principal da tela
-
-const InputView = styled.View`
-  width: 90%;
-  border-bottom-width: 1px;
-  border-bottom-color: #A4A4A4;
-  padding: 5px;
-  margin-bottom: 20px;
-`;//Area que contem os inputs
-
-const Input = styled.TextInput`
-  height: 40px;
-  font-size: 18px;
-  color: black;
-`;//Os inputs em si
-
-const BackButton = styled.TouchableHighlight`
-background-color: #088A29;
-color: red;
-font-size: 22px;
-font-weight: bold;
-width: 10%;
-margin-top: 13px;
 `;
 
-const ButtonSymbol = styled.Text`
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
+const InputView = styled.View`
   width: 100%;
-  justify-content: center;
+  border-bottom-width: 1px;
+  border-bottom-color: #A4A4A4;
+  margin-bottom: 20px;
   padding-left: 10px;
-  padding-top: 10px;
+  overflow: hidden;
+`;
+
+const Input = styled.TextInput.attrs((props) => ({
+  placeholderTextColor: '#A4A4A4',}))`
+  height: 40px;
+  font-size: 18px;
+  overflow: hidden;
+  padding: 0;
+  color: #424242;
 `;
 
 const Button = styled.TouchableHighlight`
   margin-bottom: 10px;
   width: 100%;  
-`;//Area que fica os botões
+`;
 
 const LoginText = styled.Text`
   color: white;
@@ -64,31 +47,37 @@ const LoginText = styled.Text`
   padding: 10px;
   border-radius: 5px;
   text-align: center;
-`;//Texto de realizar o login
+`;
 
 const Header = styled.View`
   width: 100%;
   background-color: #088A29;
   height: 50px;
-  margin-bottom: 20px;
   align-items: flex-start;
-`;//Area que contem o titulo da tela
+  flex-direction: row;
+`;
 
 const HeaderText = styled.Text`
   color: white;
   font-size: 22px;
   padding: 10px;
-  margin-left: 20px;
-`;//Titulo da tela
+`;
 
 const MenuButton = styled.TouchableHighlight`
+  background-color: #088A29;
   color: red;
   font-size: 22px;
   font-weight: bold;
-  width: 7%;
-  margin-top: 12px;
-  position: absolute;
+  width: 10%;
+  margin-top: 13px;
+  align-items: center;
 `;
+
+const styles = StyleSheet.create({
+  datePickerStyle: {
+    width: 300,
+  }
+});
 
 const Touchable = styled.TouchableOpacity``;
 
@@ -109,47 +98,59 @@ export default function RotasFormEdit({navigation, route}) {
   const ultimoAno = novoAno.toString();
   const ultimaData = '28/' + ultimoMes + '/' + ultimoAno;
 
-  const [origem, setOrigem] = useState({name: ''});
-  const [destino, setDestino] = useState({name: ''});
+  const [origem, setOrigem] = useState('');
+  const [destino, setDestino] = useState('');
   const [dataIda, setDataIda] = useState(data);
-  const [dataVolta, setDataVolta] = useState('');
-  const [menuVisible, setMenuVisible] = useState(false);
 
   const onPressOrigem = async () => {
-    const reqCities = await fetch('http://34.207.157.190:5000/city', {
+    try {
+      const reqCities = await fetch('http://34.207.157.190:5000/city', {
         method: 'GET'
       });
+      
       const jsonCities = await reqCities.json();
+      
       const cities = jsonCities.cities;
-      /* const listaTeste = [{name: 'Rio Grande', id: 736405},
-      {name: 'Porto Alegre', id: 649203},
-      {name: 'Pelotas', id: 120495}];
-      const cities = listaTeste; */
-    navigation.navigate('Pesquisa de Origem', {cities, onReturnOrigem: (item) => {
-      setOrigem(item);
-    }})
+
+      if(jsonCities.success == false){
+        Alert.alert('Aviso','Erro na busca - ' + jsonCities.message);
+      } else {
+        navigation.navigate('Pesquisa de Origem', {cities: cities, onReturnOrigem: (item) => {setOrigem(item)}})
+      }
+
+    } catch (error) {
+      Alert.alert('Aviso','Erro interno do servidor! Tente novamente mais tarde.');
+      console.log(error);
+    }
   }
 
   const onPressDestino = async () => {
-    const reqCities = await fetch('http://34.207.157.190:5000/city', {
+    try {
+      const reqCities = await fetch('http://34.207.157.190:5000/city', {
         method: 'GET'
       });
+
       const jsonCities = await reqCities.json();
+
       const cities = jsonCities.cities;
-      /* const listaTeste = [{name: 'Rio Grande', id: 736405},
-      {name: 'Porto Alegre', id: 649203},
-      {name: 'Pelotas', id: 120495}];
-      const cities = listaTeste; */
-    navigation.navigate('Pesquisa de Destino', {cities, onReturnDestino: (item) => {
-      setDestino(item);
-    }})
+
+      if(jsonCities.success == false){
+        Alert.alert('Aviso','Erro na busca - ' + jsonCities.message);
+      } else {
+        navigation.navigate('Pesquisa de Destino', {cities:cities, onReturnDestino: (item) => {setDestino(item)}})
+      }
+
+    } catch (error) {
+      Alert.alert('Aviso','Erro interno do servidor! Tente novamente mais tarde.');
+      console.log(error);
+    }
+
   }
 
   const Buscar = async () => {
-    if(origem && destino && dataIda){
+    if(origem && destino && dataIda !== ""){
       const dataArray = dataIda.split('/');
       const dataCerta = dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0];
-      const dat = new Date(dataIda);
       console.log(dataCerta);
       const req = await fetch('http://34.207.157.190:5000/tripByDate', {
         method: 'POST',
@@ -164,24 +165,26 @@ export default function RotasFormEdit({navigation, route}) {
       });
       var viagens = [];
       const json = await req.json();
+      console.log(json);
       if(json.success){
         json.trips.forEach(item => {
-          viagens.push(item);
+          console.log(item.bus);
+          viagens.push({
+            dataIda: item.tripdate, 
+            preco: item.price, 
+            id: item.id, 
+            busID: item.bus_id,
+            origem_id: item.origin_id,
+            destino_id: item.destination_id
+          });
         })
+      } else{
+        console.log(json.message);
       }
-      else{
-        //console.log(json.message);
-      }
-      /* const reqteste = await fetch('http://34.207.157.190:5000/trip')
-      const jsonteste = await reqteste.json();
-      console.log(jsonteste); */
-      /* const viagens = [{ida:'12/03/2021',assentos:32, preco:102.09, id: 123, busID: 83684},
-      {ida:'12/03/2021',assentos:32, preco:103.09, id: 123, busID: 83684},
-      {ida:'12/03/2021',assentos:32, preco:101.09, id: 123, busID: 83684}]; */
-      DataHandler.origem = origem;
-      DataHandler.destino = destino;
-      DataHandler.dataIda = dataIda;
-      navigation.navigate('Rotas Editar', {viagens,origem,destino,dataIda});
+      route.params.dataHandler.setDataIda(dataIda)
+      route.params.dataHandler.setOrigem(origem)
+      route.params.dataHandler.setDestino(destino)
+      navigation.navigate('Rotas Editar', {dataHandler: route.params.dataHandler, viagens: viagens});
     }
     else{
       alert('Preencha os campos obrigatórios');
@@ -199,7 +202,7 @@ export default function RotasFormEdit({navigation, route}) {
       </Header>
 
       <Container>
-        <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20}} />
+        <Image source={require('../images/logo.png')} style={{height: 50, width: 330, marginBottom: 20, marginTop: 20}} />
         <Touchable onPress={onPressOrigem}>
         <InputView>
           <Input 
@@ -238,36 +241,17 @@ export default function RotasFormEdit({navigation, route}) {
               marginLeft: 0,
             },
             dateInput: {
-              marginLeft: 36,
               borderWidth: 0,
+            },
+            dateText: {
+              fontSize: 18,
+            },
+            placeholderText: {
+              fontSize: 18,
+              color: '#A4A4A4',
             },
           }}
           onDateChange={(dataIda) => {setDataIda(dataIda)}}/>
-        </InputView>
-        <InputView>
-        <DatePicker
-        style={styles.datePickerStyle}
-        date={dataVolta}
-        mode="date"
-        placeholder="Escolha a data de volta (opcional)"
-        format="DD/MM/YYYY"
-        minDate={data}
-        maxDate={ultimaData}
-        confirmBtnText="Confirmar"
-        cancelBtnText="Cancelar"
-        customStyles={{
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0,
-          },
-          dateInput: {
-            marginLeft: 36,
-            borderWidth: 0,
-          },
-        }}
-        onDateChange={(dataVolta) => {setDataVolta(dataVolta)}}/>
         </InputView>
         <Button onPress={Buscar}>
           <LoginText>Buscar</LoginText>
@@ -276,10 +260,3 @@ export default function RotasFormEdit({navigation, route}) {
     </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  datePickerStyle: {
-    width: 200,
-    marginTop: 20,
-  }
-});

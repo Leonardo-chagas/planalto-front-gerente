@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View} from 'react-native';
+import { View, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { LogBox } from 'react-native';
@@ -69,7 +69,28 @@ const ItemArea = styled.TouchableHighlight`
   padding-left: 10px;
 `;
 
-export default function RotasEdit({navigation, route}) {
+const Button = styled.TouchableHighlight`
+  margin-bottom: 10px;
+  width: 100%;
+  right: 20px; 
+`;
+
+const LoginText = styled.Text`
+  color: white;
+  background-color: #04B431;
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+`;
+
+const ButtonView = styled.View`
+  background-color: #088A29;
+  width: 100%;
+  padding-left: 50px;
+`;
+
+export default function Viagens({navigation, route}) {
   const [viagens] = useState(route.params.viagens);
   const [origem] = useState(route.params.dataHandler.getOrigem());
   const [destino] = useState(route.params.dataHandler.getDestino());
@@ -92,11 +113,16 @@ export default function RotasEdit({navigation, route}) {
         </BackButton>
         <HeaderText>{origem.name} {'--->'} {destino.name}</HeaderText>
       </Header>
+      <ButtonView>
+        <Button onPress={() => navigation.navigate('Adicionar Onibus', {dataHandler: route.params.dataHandler})}>
+        <LoginText>Adicionar ônibus</LoginText>
+        </Button>
+      </ButtonView>
       <SearchDropdownArea>
         <SearchDropdown>
         {viagens.map(item=>{
           return(
-            <ItemArea onPress={() => navigation.navigate("Alterar Horario", {dataHandler: route.params.dataHandler, item: item})} navigator={navigation}
+            <ItemArea navigator={navigation}
             underlayColor='#b5b5b5'
             activeOpacity={0.6}>
             <View>

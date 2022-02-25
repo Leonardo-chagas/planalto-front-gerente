@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import Data from './cities.json'
 import Icon from 'react-native-vector-icons/AntDesign';
-import DataHandler from '../DataHandler';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); 
+// LogBox.ignoreAllLogs();
 
 const Page = styled.SafeAreaView`
   flex: 1;
   background-color: #F2F2F2;
   align-items: center;
-`;//Area que contem os elementos da tela
+`;
 
 const Header = styled.View`
   width: 100%;
@@ -17,47 +18,22 @@ const Header = styled.View`
   height: 50px;
   align-items: flex-start;
   flex-direction: row;
-`;//Area que contem o titulo da tela
+`;
 
 const HeaderText = styled.Text`
   color: white;
   font-size: 22px;
   padding: 10px;
-`;//Titulo da tela
-
-const InputView = styled.View`
-  background-color: #088A29;
-  width: 100%;
-  padding-left: 50px;
-`
-
-const Input = styled.TextInput`
-  background-color: #088A29;
-  color: white;
-  width: 80%;
-  height: 50px;
-  font-size: 20px;
-  font-weight: bold;
-  padding-horizontal: 10px;
-  border-bottom-width: 1px;
-  border-bottom-color: white;
-  margin-bottom: 10px;
-  padding-left: 10px;
 `;
 
 const SearchDropdownArea = styled.ScrollView`
   position: absolute;
-  top: 25%;
+  top: 15%;
   left: 0px;
   right: 0px;
   bottom: 0px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-`;
-
-const SearchDropdown = styled.View`
-  flex-wrap: wrap;
-  margin-horizontal: 20px;
 `;
 
 const BackButton = styled.TouchableHighlight`
@@ -67,32 +43,52 @@ const BackButton = styled.TouchableHighlight`
   font-weight: bold;
   width: 10%;
   margin-top: 13px;
-`;
-
-const ButtonSymbol = styled.Text`
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  width: 100%;
-  justify-content: center;
-  padding-left: 10px;
-  padding-top: 10px;
+  align-items: center;
 `;
 
 const Item = styled.Text`
-font-size: 22px;
-width: 100%;
-padding-top: 5px;
-padding-bottom: 5px;
+  font-size: 20px;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color: #A4A4A4;
 `;
 
 const ItemArea = styled.TouchableHighlight`
-width: 100%;
-border-width: 1px;
-border-color: #A4A4A4;
-border-radius: 10px;
-margin-bottom: 10px;
-background-color: white;
+  width: 100%;
+  border-width: 1px;
+  border-color: #A4A4A4;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  padding-left: 10px;
+`;
+
+
+const InputView = styled.View`
+  background-color: #088A29;
+  width: 100%;
+  padding-left: 50px;
+`
+
+const Input  = styled.TextInput.attrs((props) => ({
+  placeholderTextColor: 'white',
+}))`
+  background-color: #088A29;
+  color: white;
+  width: 80%;
+  height: 50px;
+  font-size: 20px;
+  padding-horizontal: 10px;
+  border-bottom-width: 1px;
+  border-bottom-color: white;
+  margin-bottom: 10px;
+  padding-left: 10px;
+`;
+
+const SearchDropdown = styled.View`
+  flex-wrap: wrap;
+  margin-horizontal: 20px;
 `;
 
 export default function Onibus({navigation, route}) {
@@ -114,9 +110,7 @@ export default function Onibus({navigation, route}) {
         else{
             setFiltered(dataSource);
         }
-    }
-
-    
+    }    
 
     const Select = (item) => {
       setOnibus(item.plate);

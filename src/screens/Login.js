@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); 
+// LogBox.ignoreAllLogs();
 
 const dataHandler = new DataHandler();
 
@@ -84,7 +87,9 @@ export default function Login({navigation}) {
       if(json.success == true){
         dataHandler.setAccessToken(json.access_token);
         dataHandler.setRefreshToken(json.refresh_token);
-        navigation.navigate('Menu');
+        setUsername('');
+        setPassword('');
+        navigation.navigate('Menu', {dataHandler: dataHandler});
        } else {
         Alert.alert('Aviso','Login Negado - ' + json.message);
       } 

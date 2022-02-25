@@ -1,19 +1,19 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import  OrigemPesquisa  from './screens/OrigemPesquisa'
-import  DestinoPesquisa  from './screens/DestinoPesquisa'
-import Viagens from './screens/Viagens'
+import OrigemPesquisa  from './screens/OrigemPesquisa'
+import DestinoPesquisa  from './screens/DestinoPesquisa'
+import NovaViagem from './screens/NovaViagem'
 import Login from './screens/Login';
 import Confirmar from './screens/Confirmar';
 import MainMenu from './screens/Menu';
 import AdicionarBus from './screens/AdicionarBus';
 import Onibus from './screens/Onibus';
-import RotaForm from './screens/RotaForm';
+import ExcluirViagem from './screens/ExcluirViagem';
 import Rotas from './screens/Rotas';
 import AlterarHorario from './screens/AlterarHorario';
-import ViagemForm from './screens/ViagemForm';
-import RotasFormEdit from './screens/RotasFormEdit';
+import InserirViagem from './screens/InserirViagem';
+import EditarViagem from './screens/EditarViagem';
 import RotasEdit from './screens/RotasEdit';
 
 const Stack = createNativeStackNavigator();
@@ -33,8 +33,8 @@ export default () => {
         name='Adicionar Onibus'
         component={AdicionarBus}/>
       <Stack.Screen
-        name='Pesquisa de Rotas'
-        component={RotaForm}/>
+        name='Excluir Viagem'
+        component={ExcluirViagem}/>
       <Stack.Screen
         name='Onibus'
         component={Onibus}/>
@@ -54,17 +54,17 @@ export default () => {
         name='Alterar Horario'
         component={AlterarHorario}/>
         <Stack.Screen
-        name='Pesquisa de Rotas Editar'
-        component={RotasFormEdit}/>
+        name='Editar Viagem'
+        component={EditarViagem}/>
         <Stack.Screen
         name='Rotas Editar'
         component={RotasEdit}/>
       <Stack.Screen
-        name='Pesquisa de Viagens'
-        component={ViagemForm}/>
+        name='Inserir Viagem'
+        component={InserirViagem}/>
       <Stack.Screen
-        name='Viagens'
-        component={Viagens}/>
+        name='Nova Viagem'
+        component={NovaViagem}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

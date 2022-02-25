@@ -1,4 +1,4 @@
-/* class DataHandler {
+class DataHandler {
     constructor() {
         this.origem = '';
         this.destino = '';
@@ -60,15 +60,4 @@
     };
 }
 
-export default DataHandler; */
-
-export default function DataHandler(){
-    global.origem = '';
-    global.destino = '';
-    global.dataIda = '';
-    global.assento = '';
-    global.viagemID = 0;
-    global.assentoID = 0;
-    global.token = '';
-    global.refresh = '';
-}
+export default DataHandler;

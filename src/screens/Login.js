@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Image } from 'react-native';
+import { Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import DataHandler from '../DataHandler';
 
-//const dataHandler = new DataHandler();
+const dataHandler = new DataHandler();
 
 const Page = styled.SafeAreaView`
   flex: 1;
@@ -16,16 +16,22 @@ const Container = styled.View`
 `;
 
 const InputView = styled.View`
-  width: 90%;
+  width: 100%;
   border-bottom-width: 1px;
   border-bottom-color: #A4A4A4;
-  padding: 5px;
   margin-bottom: 20px;
+  padding-left: 10px;
+  overflow: hidden
 `;
 
-const Input = styled.TextInput`
+const Input = styled.TextInput.attrs((props) => ({
+  placeholderTextColor: '#A4A4A4',
+}))`
   height: 40px;
   font-size: 18px;
+  overflow: hidden;
+  padding: 0;
+  color: #424242;
 `;
 
 const Button = styled.TouchableHighlight`
@@ -42,28 +48,12 @@ const LoginText = styled.Text`
   text-align: center;
 `;
 
-const SenhaText = styled.Text`
-  color: #A4A4A4;
-  font-size: 22px;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-`;
-
-const CadastroText = styled.Text`
-  color: #2E9AFE;
-  font-size: 24px;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-`;
-
 const Header = styled.View`
   width: 100%;
   background-color: #088A29;
   height: 50px;
-  margin-bottom: 20px;
   align-items: flex-start;
+  flex-direction: row;
 `;
 
 const HeaderText = styled.Text`
@@ -92,16 +82,15 @@ export default function Login({navigation}) {
       const json = await req.json();
 
       if(json.success == true){
-        DataHandler.token = json.access_token;
-        DataHandler.refresh = json.refresh_token;
-        //dataHandler.setRefreshToken(json.refresh_token);
+        dataHandler.setAccessToken(json.access_token);
+        dataHandler.setRefreshToken(json.refresh_token);
         navigation.navigate('Menu');
        } else {
-        alert('Login Negado - ' + json.message);
+        Alert.alert('Aviso','Login Negado - ' + json.message);
       } 
 
     } else {
-      alert('Preencha as informações!')
+      Alert.alert('Aviso', 'Preencha as informações!')
     }
   }
   
@@ -111,7 +100,7 @@ export default function Login({navigation}) {
         <HeaderText>Login</HeaderText>
       </Header>
       <Container>
-        <Image source={require('../images/logo.png')} style={{height: 60, width: 370, marginBottom: 20}} />
+        <Image source={require('../images/logo.png')} style={{height: 60, width: 370, marginBottom: 20, marginTop: 20}} />
         <InputView>
           <Input value={username} onChangeText={t=>setUsername(t)} placeholder={'E-mail/CPF/CNPJ'}/>
         </InputView>
